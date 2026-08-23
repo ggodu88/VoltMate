@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import {
   X,
   Search,
@@ -10,11 +10,13 @@ import {
   Layers,
   ExternalLink,
   ChevronRight,
+  ChevronLeft,
   Sparkles,
   Copy,
   Check,
   AlertTriangle,
   Zap,
+  ArrowRightLeft,
 } from "lucide-react";
 import { LEGAL_STANDARDS_SYSTEM } from "../data/legalStandardsSystem";
 import { LegalStandardItem, ConstructionPhase, PHASE_CONFIG } from "../types";
@@ -48,14 +50,36 @@ export const LegalStandardsModal: React.FC<LegalStandardsModalProps> = ({
       LEGAL_STANDARDS_SYSTEM[0]
   );
   const [copiedText, setCopiedText] = useState<string | null>(null);
+  const [mobileView, setMobileView] = useState<"list" | "detail">("list");
+  const detailContainerRef = useRef<HTMLDivElement>(null);
+  const scrollCategoryRef = useRef<HTMLDivElement>(null);
 
-  // Update selected standard if targetInitialId changes
-  React.useEffect(() => {
+  const scrollCategoryTabs = (direction: "left" | "right") => {
+    if (scrollCategoryRef.current) {
+      const scrollAmount = direction === "left" ? -180 : 180;
+      scrollCategoryRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    }
+  };
+
+  // Update selected standard and view if targetInitialId changes
+  useEffect(() => {
     if (targetInitialId) {
       const found = LEGAL_STANDARDS_SYSTEM.find((s) => s.id === targetInitialId);
-      if (found) setSelectedStandard(found);
+      if (found) {
+        setSelectedStandard(found);
+        setMobileView("detail");
+      }
     }
-  }, [targetInitialId]);
+  }, [targetInitialId, isOpen]);
+
+  // When standard changes, scroll detail container to top
+  const handleSelectStandard = (std: LegalStandardItem) => {
+    setSelectedStandard(std);
+    setMobileView("detail");
+    if (detailContainerRef.current) {
+      detailContainerRef.current.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   const categories = ["ALL", "법률/시행령", "기술기준/고시", "국가표준/지침", "안전/인허가"];
 
@@ -178,30 +202,115 @@ export const LegalStandardsModal: React.FC<LegalStandardsModalProps> = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-3 py-1.5 text-xs rounded-md font-semibold whitespace-nowrap transition-all ${
-                  selectedCategory === cat
-                    ? "bg-amber-400 text-slate-950 font-bold shadow-xs"
-                    : isDark
-                    ? "bg-slate-800 text-slate-300 hover:bg-slate-700"
-                    : "bg-white text-slate-700 hover:bg-slate-200 border border-slate-200 shadow-xs"
-                }`}
-              >
-                {cat === "ALL" ? "전체 (17종)" : cat}
-              </button>
-            ))}
+          <div className="space-y-1">
+            <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+              <span className="font-semibold text-slate-700 dark:text-slate-300">
+                분야별 기준 선택
+              </span>
+              <div className="flex items-center gap-1">
+                <span className="text-[10px] text-amber-600 dark:text-amber-400 bg-amber-400/10 px-1.5 py-0.2 rounded border border-amber-400/20 flex items-center gap-0.5 sm:hidden">
+                  <ArrowRightLeft className="w-2.5 h-2.5" />
+                  <span>스크롤</span>
+                </span>
+                <div className="flex items-center gap-0.5">
+                  <button
+                    type="button"
+                    onClick={() => scrollCategoryTabs("left")}
+                    aria-label="이전 분류"
+                    className="p-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-amber-400 hover:text-slate-950 text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-700 transition-colors"
+                  >
+                    <ChevronLeft className="w-3 h-3" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => scrollCategoryTabs("right")}
+                    aria-label="다음 분류"
+                    className="p-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-amber-400 hover:text-slate-950 text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-700 transition-colors"
+                  >
+                    <ChevronRight className="w-3 h-3" />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div
+              ref={scrollCategoryRef}
+              className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin scroll-smooth"
+            >
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`px-3 py-1.5 text-xs rounded-md font-semibold whitespace-nowrap transition-all shrink-0 ${
+                    selectedCategory === cat
+                      ? "bg-amber-400 text-slate-950 font-bold shadow-xs"
+                      : isDark
+                      ? "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                      : "bg-white text-slate-700 hover:bg-slate-200 border border-slate-200 shadow-xs"
+                  }`}
+                >
+                  {cat === "ALL" ? "전체 (17종)" : cat}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* MODAL BODY (TWO COLUMN LAYOUT) */}
-        <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
+        {/* MODAL BODY (RESPONSIVE MASTER-DETAIL LAYOUT) */}
+        <div className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
+          {/* MOBILE VIEW TOGGLE / BREADCRUMB BAR (MOBILE ONLY) */}
+          <div
+            className={`md:hidden px-4 py-2 border-b flex items-center justify-between gap-2 shrink-0 ${
+              isDark ? "bg-slate-950/90 border-slate-800" : "bg-slate-100 border-slate-200"
+            }`}
+          >
+            {mobileView === "detail" ? (
+              <button
+                type="button"
+                onClick={() => setMobileView("list")}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold bg-amber-400 text-slate-950 shadow-xs active:scale-95 transition-all"
+              >
+                <ChevronLeft className="w-4 h-4 stroke-[2.5]" />
+                <span>← 전체 법령 목록 (17종)</span>
+              </button>
+            ) : (
+              <div className="flex items-center gap-1.5 text-xs font-bold text-amber-600 dark:text-amber-400">
+                <Scale className="w-3.5 h-3.5" />
+                <span>법령을 터치하면 상세 규정이 열립니다</span>
+              </div>
+            )}
+
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => setMobileView("list")}
+                className={`px-2.5 py-1 text-[11px] font-bold rounded-md transition-all ${
+                  mobileView === "list"
+                    ? "bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-900"
+                    : "text-slate-500 hover:text-slate-900 dark:text-slate-400"
+                }`}
+              >
+                목록
+              </button>
+              <button
+                type="button"
+                onClick={() => setMobileView("detail")}
+                className={`px-2.5 py-1 text-[11px] font-bold rounded-md transition-all ${
+                  mobileView === "detail"
+                    ? "bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-900"
+                    : "text-slate-500 hover:text-slate-900 dark:text-slate-400"
+                }`}
+              >
+                상세 규정
+              </button>
+            </div>
+          </div>
+
           {/* LEFT LIST PANEL */}
           <div
             className={`w-full md:w-80 lg:w-96 border-b md:border-b-0 md:border-r flex flex-col overflow-hidden shrink-0 ${
+              mobileView === "list" ? "flex" : "hidden md:flex"
+            } ${
               isDark ? "bg-slate-950/40 border-slate-800" : "bg-slate-50 border-slate-200"
             }`}
           >
@@ -209,7 +318,7 @@ export const LegalStandardsModal: React.FC<LegalStandardsModalProps> = ({
               isDark ? "text-slate-400 border-slate-800" : "text-slate-600 border-slate-200"
             }`}>
               <span>법령 목록 ({filteredStandards.length}개)</span>
-              <span className={isDark ? "text-amber-400" : "text-amber-600 font-bold"}>선택 시 상세 규정 표출</span>
+              <span className={isDark ? "text-amber-400" : "text-amber-600 font-bold"}>터치 시 상세 규정 표출</span>
             </div>
 
             <div className="flex-1 overflow-y-auto p-2 space-y-1.5">
@@ -223,7 +332,7 @@ export const LegalStandardsModal: React.FC<LegalStandardsModalProps> = ({
                   return (
                     <button
                       key={std.id}
-                      onClick={() => setSelectedStandard(std)}
+                      onClick={() => handleSelectStandard(std)}
                       className={`w-full text-left p-3 rounded-lg transition-all flex items-start gap-3 border ${
                         isSelected
                           ? isDark
@@ -289,10 +398,28 @@ export const LegalStandardsModal: React.FC<LegalStandardsModalProps> = ({
 
           {/* RIGHT DETAIL PANEL */}
           <div
+            ref={detailContainerRef}
             className={`flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 ${
+              mobileView === "detail" ? "block" : "hidden md:block"
+            } ${
               isDark ? "bg-slate-900/90 text-slate-100" : "bg-white text-slate-900"
             }`}
           >
+            {/* Mobile Top Back Button inside detail */}
+            <div className="md:hidden flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
+              <button
+                type="button"
+                onClick={() => setMobileView("list")}
+                className="flex items-center gap-1.5 text-xs font-bold text-slate-800 dark:text-amber-300 py-1 px-2.5 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 active:scale-95 transition-all"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                <span>다른 법령 선택하기 (목록)</span>
+              </button>
+              <span className="text-xs font-mono font-bold text-amber-500">
+                코드 {selectedStandard.code}
+              </span>
+            </div>
+
             {/* DETAIL HEADER */}
             <div
               className={`p-5 rounded-lg border relative overflow-hidden ${

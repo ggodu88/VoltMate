@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   X,
   CheckSquare,
@@ -11,6 +11,7 @@ import {
   Layers,
 } from "lucide-react";
 import { ConstructionPhase, PHASE_CONFIG, PhaseChecklist } from "../types";
+import { PhaseGridSelector } from "./PhaseGridSelector";
 
 interface ChecklistModalProps {
   isOpen: boolean;
@@ -31,6 +32,14 @@ export const ChecklistModal: React.FC<ChecklistModalProps> = ({
 }) => {
   const [currentPhase, setCurrentPhase] = useState<ConstructionPhase>(initialPhase);
   const [activeChecklist, setActiveChecklist] = useState<PhaseChecklist | null>(null);
+
+  const checklistItemsCountByPhase = useMemo(() => {
+    const counts: Record<string, number> = {};
+    checklists.forEach((c) => {
+      counts[c.phase] = c.items.length;
+    });
+    return counts;
+  }, [checklists]);
 
   useEffect(() => {
     setCurrentPhase(initialPhase);
@@ -118,26 +127,15 @@ export const ChecklistModal: React.FC<ChecklistModalProps> = ({
           </button>
         </div>
 
-        {/* Phase Selector Tabs */}
-        <div className="bg-slate-900/80 p-2.5 border-b border-slate-700 flex items-center gap-1.5 overflow-x-auto shrink-0 scrollbar-none">
-          {Object.entries(PHASE_CONFIG).map(([pKey, config]) => {
-            const phaseEnum = pKey as ConstructionPhase;
-            const isSelected = currentPhase === phaseEnum;
-            return (
-              <button
-                key={pKey}
-                onClick={() => setCurrentPhase(phaseEnum)}
-                className={`px-3 py-1.5 rounded-sm text-xs font-mono font-bold whitespace-nowrap transition-all flex items-center gap-1 uppercase ${
-                  isSelected
-                    ? "bg-amber-400 text-slate-900 font-black"
-                    : "bg-slate-950 text-slate-300 border border-slate-700 hover:bg-slate-800"
-                }`}
-              >
-                <span>{config.stepNumber}.</span>
-                <span>{config.shortName}</span>
-              </button>
-            );
-          })}
+        {/* Phase Selector with 3x4 / 4x3 Grid & Scroll Controls */}
+        <div className="bg-slate-900/90 px-4 py-2.5 border-b border-slate-700 shrink-0">
+          <PhaseGridSelector
+            selectedPhase={currentPhase}
+            onSelectPhase={(p) => setCurrentPhase(p as ConstructionPhase)}
+            methodsCountByPhase={checklistItemsCountByPhase}
+            allowAll={false}
+            title="검측 공정 선택"
+          />
         </div>
 
         {/* Inspection Score Banner */}

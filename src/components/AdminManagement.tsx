@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useMemo } from "react";
 import {
   Settings2,
   Plus,
@@ -22,6 +22,7 @@ import {
   Database,
 } from "lucide-react";
 import { ConstructionMethod, ConstructionPhase, PHASE_CONFIG } from "../types";
+import { PhaseGridSelector } from "./PhaseGridSelector";
 import {
   exportAllDataAsJSON,
   importAllDataFromJSON,
@@ -53,6 +54,14 @@ export const AdminManagement: React.FC<AdminManagementProps> = ({
   const [successToast, setSuccessToast] = useState<string | null>(null);
   const [isCloudSyncing, setIsCloudSyncing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const methodsCountByPhase = useMemo(() => {
+    const counts: Record<string, number> = {};
+    methods.forEach((m) => {
+      counts[m.phase] = (counts[m.phase] || 0) + 1;
+    });
+    return counts;
+  }, [methods]);
 
   const categories = Array.from(new Set(methods.map((m) => m.category)));
 
@@ -388,55 +397,15 @@ export const AdminManagement: React.FC<AdminManagementProps> = ({
             : "bg-white border-slate-200"
         }`}
       >
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-          <button
-            onClick={() => setSelectedPhase("ALL")}
-            className={`px-3 py-1.5 rounded-sm text-xs font-bold whitespace-nowrap transition-all uppercase font-mono ${
-              selectedPhase === "ALL"
-                ? "bg-amber-400 text-slate-950 font-black"
-                : isDark
-                ? "bg-slate-900/80 text-slate-300 hover:bg-slate-800 border border-slate-700"
-                : "bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300"
-            }`}
-          >
-            전체 단계 ({methods.length})
-          </button>
-
-          {Object.entries(PHASE_CONFIG).map(([phaseKey, config]) => {
-            const count = methods.filter((m) => m.phase === phaseKey).length;
-            return (
-              <button
-                key={phaseKey}
-                onClick={() => setSelectedPhase(phaseKey)}
-                className={`px-3 py-1.5 rounded-sm text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 border ${
-                  selectedPhase === phaseKey
-                    ? "bg-amber-400 text-slate-950 border-amber-400 font-black"
-                    : isDark
-                    ? "bg-slate-900/80 text-slate-300 hover:bg-slate-800 border-slate-700"
-                    : "bg-slate-50 text-slate-700 hover:bg-slate-100 border-slate-200"
-                }`}
-              >
-                <span>{config.stepNumber}단계. {config.shortName}</span>
-                {config.wbsRange && (
-                  <span className="text-[10px] font-mono opacity-80 hidden md:inline">
-                    [{config.wbsRange}]
-                  </span>
-                )}
-                <span
-                  className={`text-[10px] px-1 py-0.2 rounded-sm font-mono ${
-                    selectedPhase === phaseKey
-                      ? "bg-slate-950 text-amber-300 font-bold"
-                      : isDark
-                      ? "bg-slate-950 text-slate-300"
-                      : "bg-slate-200 text-slate-700"
-                  }`}
-                >
-                  {count}
-                </span>
-              </button>
-            );
-          })}
-        </div>
+        {/* Phase Filter Component with 3x4 / 4x3 Grid & Scroll Bar */}
+        <PhaseGridSelector
+          selectedPhase={selectedPhase}
+          onSelectPhase={setSelectedPhase}
+          methodsCountByPhase={methodsCountByPhase}
+          totalCount={methods.length}
+          allowAll={true}
+          title="시공 단계 선택 (관리)"
+        />
 
         {/* Search & Category Filter */}
         <div className="flex flex-col sm:flex-row gap-3">
@@ -537,7 +506,7 @@ export const AdminManagement: React.FC<AdminManagementProps> = ({
                       <span
                         className={`text-[10px] font-bold px-2 py-0.5 rounded-sm border uppercase ${phaseConfig.badgeBg}`}
                       >
-                        {phaseConfig.shortName} ({phaseConfig.stepNumber}단계)
+                        {phaseConfig.shortName}
                       </span>
                       {method.wbsCode && (
                         <span className="text-[10px] font-mono font-black bg-amber-400 text-slate-950 px-2 py-0.5 rounded-sm">

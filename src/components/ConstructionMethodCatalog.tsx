@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Search,
   BookOpen,
@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { ConstructionMethod, PHASE_CONFIG } from "../types";
 import { useTheme } from "../context/ThemeContext";
+import { PhaseGridSelector } from "./PhaseGridSelector";
 
 interface ConstructionMethodCatalogProps {
   methods: ConstructionMethod[];
@@ -30,6 +31,14 @@ export const ConstructionMethodCatalog: React.FC<
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedPhase, setSelectedPhase] = useState<string>("ALL");
   const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
+
+  const methodsCountByPhase = useMemo(() => {
+    const counts: Record<string, number> = {};
+    methods.forEach((m) => {
+      counts[m.phase] = (counts[m.phase] || 0) + 1;
+    });
+    return counts;
+  }, [methods]);
 
   const categories = Array.from(new Set(methods.map((m) => m.category)));
 
@@ -153,57 +162,15 @@ export const ConstructionMethodCatalog: React.FC<
             : "bg-white border-slate-200"
         }`}
       >
-        {/* Phase Filter Buttons */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-          <button
-            onClick={() => setSelectedPhase("ALL")}
-            className={`px-3 py-1.5 rounded-sm text-xs font-bold whitespace-nowrap transition-all uppercase font-mono ${
-              selectedPhase === "ALL"
-                ? "bg-amber-400 text-slate-950 font-black shadow-sm"
-                : isDark
-                ? "bg-slate-900/80 text-slate-300 hover:bg-slate-800 border border-slate-700"
-                : "bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300"
-            }`}
-          >
-            전체 단계 ({methods.length})
-          </button>
-
-          {Object.entries(PHASE_CONFIG).map(([phaseKey, config]) => {
-            const count = methods.filter((m) => m.phase === phaseKey).length;
-            const isSelected = selectedPhase === phaseKey;
-            return (
-              <button
-                key={phaseKey}
-                onClick={() => setSelectedPhase(phaseKey)}
-                className={`px-3 py-1.5 rounded-sm text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 border ${
-                  isSelected
-                    ? "bg-amber-400 text-slate-950 border-amber-400 shadow-sm font-black"
-                    : isDark
-                    ? "bg-slate-900/80 text-slate-300 hover:bg-slate-800 border-slate-700"
-                    : "bg-slate-50 text-slate-700 hover:bg-slate-100 border-slate-200"
-                }`}
-              >
-                <span>{config.stepNumber}단계. {config.shortName}</span>
-                {config.wbsRange && (
-                  <span className="text-[10px] font-mono opacity-80 hidden md:inline">
-                    [{config.wbsRange}]
-                  </span>
-                )}
-                <span
-                  className={`text-[10px] px-1.5 py-0.2 rounded-sm font-mono font-bold ${
-                    isSelected
-                      ? "bg-slate-950 text-amber-300"
-                      : isDark
-                      ? "bg-slate-950 text-slate-300"
-                      : "bg-slate-200 text-slate-700"
-                  }`}
-                >
-                  {count}
-                </span>
-              </button>
-            );
-          })}
-        </div>
+        {/* Phase Filter Component with 3x4 / 4x3 Grid & Scroll Bar */}
+        <PhaseGridSelector
+          selectedPhase={selectedPhase}
+          onSelectPhase={setSelectedPhase}
+          methodsCountByPhase={methodsCountByPhase}
+          totalCount={methods.length}
+          allowAll={true}
+          title="시공 단계 선택"
+        />
 
         {/* Search & Category Filter */}
         <div className="flex flex-col sm:flex-row gap-3">
@@ -291,7 +258,7 @@ export const ConstructionMethodCatalog: React.FC<
                       <span
                         className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-sm text-[10px] font-bold border uppercase tracking-wider ${phaseConfig.badgeBg}`}
                       >
-                        {phaseConfig.shortName} ({phaseConfig.stepNumber}단계)
+                        {phaseConfig.shortName}
                       </span>
                       {method.wbsCode && (
                         <span className="px-2 py-0.5 rounded-sm text-[10px] font-mono font-black bg-amber-400 text-slate-950 shadow-xs">

@@ -25,6 +25,12 @@ interface AiConsultantModalProps {
   onOpenApiKeyModal?: () => void;
 }
 
+interface Message {
+  role: "user" | "assistant";
+  content: string;
+  timestamp: string;
+}
+
 export const AiConsultantModal: React.FC<AiConsultantModalProps> = ({
   isOpen,
   onClose,

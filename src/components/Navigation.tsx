@@ -7,7 +7,6 @@ import {
   Settings2,
   HardHat,
   Zap,
-  Plus,
   Sun,
   Moon,
   Scale,
@@ -21,7 +20,6 @@ interface NavigationProps {
   onTabChange: (tab: "PROJECTS" | "METHODS" | "LOGS" | "ADMIN") => void;
   onOpenAiConsultant: (query?: string) => void;
   onOpenLegalStandards?: () => void;
-  onOpenNewProject?: () => void;
   onOpenApiKeyModal?: () => void;
   selectedProjectName?: string;
 }
@@ -31,7 +29,6 @@ export const Navigation: React.FC<NavigationProps> = ({
   onTabChange,
   onOpenAiConsultant,
   onOpenLegalStandards,
-  onOpenNewProject,
   onOpenApiKeyModal,
   selectedProjectName,
 }) => {
@@ -55,19 +52,19 @@ export const Navigation: React.FC<NavigationProps> = ({
             : "bg-white/95 text-slate-900 border-slate-200 shadow-xs"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-15 sm:h-16 gap-3">
-            {/* Brand Logo & Current Project Badge */}
-            <div className="flex items-center gap-3 select-none shrink-0 min-w-0">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-14 sm:h-16 gap-2 sm:gap-3">
+            {/* Brand Logo & Current Project Badge (Desktop) */}
+            <div className="flex items-center gap-2 sm:gap-3 select-none min-w-0">
               <div
-                className="flex items-center gap-2 cursor-pointer group"
+                className="flex items-center gap-2 cursor-pointer group shrink-0"
                 onClick={() => onTabChange("PROJECTS")}
                 title="현장 프로젝트 목록으로 이동"
               >
                 <div className="w-8 h-8 sm:w-9 sm:h-9 bg-amber-400 rounded-md flex items-center justify-center shadow-md shadow-amber-400/25 text-slate-950 shrink-0 group-hover:scale-105 transition-transform">
                   <Zap className="w-5 h-5 fill-slate-950 stroke-[2.5]" />
                 </div>
-                <div className="flex items-baseline gap-1.5">
+                <div className="flex items-baseline gap-1">
                   <span
                     className={`text-base sm:text-lg font-black tracking-tight ${
                       isDark ? "text-white" : "text-slate-950"
@@ -83,15 +80,15 @@ export const Navigation: React.FC<NavigationProps> = ({
                 스마트 전기시공 통합 파트너
               </span>
 
-              {/* Active Project Indicator Badge */}
+              {/* Active Project Indicator Badge (Visible on Tablet & PC) */}
               {selectedProjectName && (
                 <div
                   onClick={() => onTabChange("PROJECTS")}
-                  className="flex items-center gap-1.5 px-2.5 py-1 bg-amber-400/15 dark:bg-amber-400/10 border border-amber-500/30 rounded-md cursor-pointer hover:border-amber-500/60 transition-colors max-w-[180px] sm:max-w-[260px] truncate"
+                  className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-amber-400/15 dark:bg-amber-400/10 border border-amber-500/30 rounded-md cursor-pointer hover:border-amber-500/60 transition-colors max-w-[200px] md:max-w-[280px] truncate"
                   title={`현재 활성 현장: ${selectedProjectName}`}
                 >
                   <HardHat className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-                  <span className="text-[10px] text-amber-600 dark:text-amber-400 font-mono font-bold shrink-0 hidden sm:inline">
+                  <span className="text-[10px] text-amber-600 dark:text-amber-400 font-mono font-bold shrink-0">
                     현장:
                   </span>
                   <span className="text-xs font-bold text-slate-900 dark:text-amber-300 truncate">
@@ -101,15 +98,15 @@ export const Navigation: React.FC<NavigationProps> = ({
               )}
             </div>
 
-            {/* Right Action Tools: API Key, Theme Toggle, New Project */}
-            <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+            {/* Right Action Tools: ONLY API Key & Day/Night Mode Switcher */}
+            <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
               {/* Google Gemini API Key Settings Button */}
               {onOpenApiKeyModal && (
                 <button
                   id="header-api-key-btn"
                   type="button"
                   onClick={onOpenApiKeyModal}
-                  className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-mono font-bold transition-all border shadow-xs ${
+                  className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-md text-[11px] sm:text-xs font-mono font-bold transition-all border shadow-xs ${
                     hasApiKey
                       ? isDark
                         ? "bg-emerald-950/50 hover:bg-emerald-900/60 text-emerald-300 border-emerald-500/40"
@@ -120,8 +117,8 @@ export const Navigation: React.FC<NavigationProps> = ({
                   }`}
                   title="Google Gemini AI API 키 설정 (BYOK)"
                 >
-                  <Key className={`w-3.5 h-3.5 ${hasApiKey ? "text-emerald-400" : "text-amber-500"}`} />
-                  <span className="hidden sm:inline">
+                  <Key className={`w-3.5 h-3.5 shrink-0 ${hasApiKey ? "text-emerald-400" : "text-amber-500"}`} />
+                  <span className="whitespace-nowrap">
                     {hasApiKey ? "API키 연결됨" : "API키 설정"}
                   </span>
                 </button>
@@ -132,7 +129,7 @@ export const Navigation: React.FC<NavigationProps> = ({
                 id="theme-toggle-btn"
                 type="button"
                 onClick={toggleTheme}
-                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-mono font-bold transition-all border shadow-xs ${
+                className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-md text-[11px] sm:text-xs font-mono font-bold transition-all border shadow-xs ${
                   isDark
                     ? "bg-slate-800 hover:bg-slate-700 text-amber-300 border-slate-600"
                     : "bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300"
@@ -141,32 +138,40 @@ export const Navigation: React.FC<NavigationProps> = ({
               >
                 {isDark ? (
                   <>
-                    <Sun className="w-3.5 h-3.5 text-amber-400" />
-                    <span className="hidden md:inline">주간</span>
+                    <Sun className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                    <span className="whitespace-nowrap">주간</span>
                   </>
                 ) : (
                   <>
-                    <Moon className="w-3.5 h-3.5 text-indigo-600" />
-                    <span className="hidden md:inline">야간</span>
+                    <Moon className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
+                    <span className="whitespace-nowrap">야간</span>
                   </>
                 )}
               </button>
-
-              {/* New Project Registration Button */}
-              {onOpenNewProject && (
-                <button
-                  id="header-new-project-btn"
-                  onClick={onOpenNewProject}
-                  className="flex items-center gap-1.5 bg-amber-400 hover:bg-amber-300 text-slate-950 px-3 py-1.5 rounded-md text-xs font-black transition-all shadow-sm shadow-amber-400/25 active:scale-95 whitespace-nowrap"
-                  title="신규 현장 등록"
-                >
-                  <Plus className="w-3.5 h-3.5 stroke-[3]" />
-                  <span>현장등록</span>
-                </button>
-              )}
             </div>
           </div>
         </div>
+
+        {/* Mobile Active Project Sub-bar (Only on small screens when a project is selected) */}
+        {selectedProjectName && (
+          <div
+            onClick={() => onTabChange("PROJECTS")}
+            className="sm:hidden flex items-center justify-between px-3 py-1 bg-amber-400/10 dark:bg-amber-400/5 border-t border-amber-500/20 text-xs cursor-pointer active:bg-amber-400/20 transition-colors"
+          >
+            <div className="flex items-center gap-1.5 min-w-0">
+              <HardHat className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+              <span className="text-[10px] text-amber-600 dark:text-amber-400 font-mono font-bold shrink-0">
+                선택 현장:
+              </span>
+              <span className="font-bold text-slate-900 dark:text-amber-300 truncate">
+                {selectedProjectName}
+              </span>
+            </div>
+            <span className="text-[10px] text-slate-400 dark:text-slate-500 shrink-0 ml-2">
+              변경 탭하기 &gt;
+            </span>
+          </div>
+        )}
       </header>
 
       {/* 2. Unified Bottom Navigation Dock Bar (PC, Tablet, Mobile) */}

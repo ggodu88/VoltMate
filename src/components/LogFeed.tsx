@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef } from "react";
 import {
   Calendar,
   MapPin,
@@ -29,6 +29,9 @@ import {
   CheckCircle,
   HelpCircle,
   ZoomIn,
+  ChevronLeft,
+  ChevronRight,
+  ArrowRightLeft,
 } from "lucide-react";
 import {
   ConstructionLog,
@@ -80,6 +83,14 @@ export const LogFeed: React.FC<LogFeedProps> = ({
   const [lightboxPhoto, setLightboxPhoto] = useState<LogPhoto | null>(null);
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
   const [expandAll, setExpandAll] = useState<boolean>(false);
+  const scrollCategoryRef = useRef<HTMLDivElement>(null);
+
+  const scrollCategoryTabs = (direction: "left" | "right") => {
+    if (scrollCategoryRef.current) {
+      const scrollAmount = direction === "left" ? -180 : 180;
+      scrollCategoryRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    }
+  };
 
   // Toggle card expand/collapse (default to collapsed summary mode for high mobile scanning efficiency)
   const toggleExpand = (id: string) => {
@@ -407,42 +418,78 @@ export const LogFeed: React.FC<LogFeedProps> = ({
           isDark ? "bg-[#1E293B] border-slate-700" : "bg-white border-slate-200"
         }`}
       >
-        {/* Quick Category Horizontal Chips */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
-          <button
-            onClick={() => setFilterCategory("ALL")}
-            className={`px-2.5 py-1 rounded-xs text-xs font-mono font-bold shrink-0 transition-all border ${
-              filterCategory === "ALL"
-                ? "bg-amber-400 text-slate-950 border-amber-400 shadow-xs"
-                : isDark
-                ? "bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200"
-                : "bg-slate-100 text-slate-600 border-slate-200 hover:text-slate-900"
-            }`}
+        {/* Quick Category Horizontal Chips with Scroll Controls */}
+        <div className="space-y-1">
+          <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+            <span className="font-bold flex items-center gap-1 text-slate-700 dark:text-slate-300">
+              <Tag className="w-3 h-3 text-amber-500" />
+              <span>노트 유형별 빠른 필터</span>
+            </span>
+            <div className="flex items-center gap-1">
+              <span className="text-[10px] text-amber-600 dark:text-amber-400 bg-amber-400/10 px-1.5 py-0.2 rounded border border-amber-400/20 flex items-center gap-0.5 sm:hidden">
+                <ArrowRightLeft className="w-2.5 h-2.5" />
+                <span>스크롤</span>
+              </span>
+              <div className="flex items-center gap-0.5">
+                <button
+                  type="button"
+                  onClick={() => scrollCategoryTabs("left")}
+                  aria-label="이전 분류"
+                  className="p-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-amber-400 hover:text-slate-950 text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-700 transition-colors"
+                >
+                  <ChevronLeft className="w-3 h-3" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => scrollCategoryTabs("right")}
+                  aria-label="다음 분류"
+                  className="p-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-amber-400 hover:text-slate-950 text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-700 transition-colors"
+                >
+                  <ChevronRight className="w-3 h-3" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div
+            ref={scrollCategoryRef}
+            className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin scroll-smooth"
           >
-            전체 ({logs.length})
-          </button>
-          {(Object.keys(NOTE_CATEGORY_CONFIG) as NoteCategory[]).map((catKey) => {
-            const conf = NOTE_CATEGORY_CONFIG[catKey];
-            const isSelected = filterCategory === catKey;
-            const count = logs.filter((l) => l.category === catKey).length;
-            return (
-              <button
-                key={catKey}
-                onClick={() => setFilterCategory(catKey)}
-                className={`flex items-center gap-1 px-2.5 py-1 rounded-xs text-xs font-mono shrink-0 transition-all border ${
-                  isSelected
-                    ? "bg-amber-400 text-slate-950 border-amber-400 font-bold shadow-xs"
-                    : isDark
-                    ? "bg-slate-900/80 text-slate-300 border-slate-700 hover:bg-slate-800"
-                    : "bg-slate-50 text-slate-700 border-slate-300 hover:bg-slate-100"
-                }`}
-              >
-                {renderCategoryIcon(catKey)}
-                <span>{conf.short}</span>
-                <span className="text-[10px] opacity-75 font-bold">({count})</span>
-              </button>
-            );
-          })}
+            <button
+              onClick={() => setFilterCategory("ALL")}
+              className={`px-2.5 py-1 rounded-xs text-xs font-mono font-bold shrink-0 transition-all border ${
+                filterCategory === "ALL"
+                  ? "bg-amber-400 text-slate-950 border-amber-400 shadow-xs"
+                  : isDark
+                  ? "bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200"
+                  : "bg-slate-100 text-slate-600 border-slate-200 hover:text-slate-900"
+              }`}
+            >
+              전체 ({logs.length})
+            </button>
+            {(Object.keys(NOTE_CATEGORY_CONFIG) as NoteCategory[]).map((catKey) => {
+              const conf = NOTE_CATEGORY_CONFIG[catKey];
+              const isSelected = filterCategory === catKey;
+              const count = logs.filter((l) => l.category === catKey).length;
+              return (
+                <button
+                  key={catKey}
+                  onClick={() => setFilterCategory(catKey)}
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-xs text-xs font-mono shrink-0 transition-all border ${
+                    isSelected
+                      ? "bg-amber-400 text-slate-950 border-amber-400 font-bold shadow-xs"
+                      : isDark
+                      ? "bg-slate-900/80 text-slate-300 border-slate-700 hover:bg-slate-800"
+                      : "bg-slate-50 text-slate-700 border-slate-300 hover:bg-slate-100"
+                  }`}
+                >
+                  {renderCategoryIcon(catKey)}
+                  <span>{conf.short}</span>
+                  <span className="text-[10px] opacity-75 font-bold">({count})</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Collapsible Filter Panel */}

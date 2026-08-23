@@ -193,10 +193,6 @@ function AppContent() {
           setIsAiModalOpen(true);
         }}
         onOpenLegalStandards={() => handleOpenLegalStandards()}
-        onOpenNewProject={() => {
-          setEditingProject(null);
-          setIsProjectModalOpen(true);
-        }}
         onOpenApiKeyModal={() => setIsApiKeyModalOpen(true)}
         selectedProjectName={currentProject?.name}
       />

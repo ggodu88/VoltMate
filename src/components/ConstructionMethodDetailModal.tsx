@@ -76,7 +76,7 @@ export const ConstructionMethodDetailModal: React.FC<ConstructionMethodDetailMod
                 <span
                   className={`px-2 py-0.5 rounded-sm text-[10px] font-bold border uppercase ${phaseConfig.badgeBg}`}
                 >
-                  {phaseConfig.shortName} ({phaseConfig.stepNumber}단계)
+                  {phaseConfig.shortName}
                 </span>
                 {method.wbsCode && (
                   <span className="px-2 py-0.5 rounded-sm text-[10px] font-mono font-black bg-amber-400 text-slate-950">
