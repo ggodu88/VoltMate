@@ -1,0 +1,10 @@
+{
+  "name": "전기공사 시공관리 시스템",
+  "description": "전기공사 착공부터 준공까지의 공정별 시공방법 상세 기록, 현장 시공일지/품질체크리스트 관리 및 시공표준 업데이트 관리자 시스템",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

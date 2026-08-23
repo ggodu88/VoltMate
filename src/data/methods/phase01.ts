@@ -1,0 +1,408 @@
+import { ConstructionMethod, ConstructionPhase } from "../../types";
+
+export const PHASE_01_METHODS: ConstructionMethod[] = [
+  {
+    id: "METH-001",
+    wbsCode: "001",
+    phase: ConstructionPhase.PHASE_01_PREPARATION,
+    title: "설계도서(도면·시방서·내역서) 검토 및 수전 용량 계획 수립",
+    category: "착공 준비",
+    summary:
+      "실시설계도면, 특기시방서, 물량내역서 간의 불일치를 전수 검토하고 부하계산서(수용률, 부등률, 역률)를 재검증하여 한전 인입 계약전력 및 변압기 뱅크 용량을 산정·확정하는 핵심 사전절차.",
+    steps: [
+      {
+        stepNumber: 1,
+        name: "도면-시방서-내역서 삼자 정합성 검토",
+        description: "전등, 전열, 동력, 소방, 통신 도면과 물량내역서 상의 수량/규격 불일치 항목 추출 및 감리단 질의서(RFI) 발송.",
+        caution: "누락된 배관 관경(CD관/후강관) 및 내화케이블(TFR-8) 적용 누락 여부 필히 확인.",
+      },
+      {
+        stepNumber: 2,
+        name: "부하용량 및 변압기 용량 재계산",
+        description: "세대별 전용부하(인덕션, 에어컨 등) 및 공용동력(승강기, 급배수펌프, 비상발전기) 부하용량 산출 후 적정 변압기 용량 산정.",
+        caution: "KEC 230 수용가설비 규정 및 전기차 충전 인프라 추가 부하율(세대당 1.2kW 이상) 반영.",
+      },
+      {
+        stepNumber: 3,
+        name: "수전 방식 및 한전 인입점 확정",
+        description: "22.9kV-y 3상4선식 특고압 인입선로 루트 및 지중 인입 맨홀 위치를 한전 배전선로와 대조 확정.",
+        caution: "한전 계통 보호협조 탭 및 변류기(MOF) 배율 사전 확인.",
+      },
+    ],
+    materials: ["실시설계도면", "전기특기시방서", "수변전단선도", "부하계산서"],
+    tools: ["CAD/BIM 소프트웨어", "전기설비 계산용 프로그램", "엔지니어링 스케일자"],
+    kecStandards: "KEC 140 접지시스템, KEC 230 수용가 설비, 전력기술관리법 제12조",
+    safetyPoints: [
+      "초기 인입 전압(22.9kV) 특고압 위험구간 표기 및 시공 안전구획 설정",
+      "설계도서 미비로 인한 현장 무단 구조물 훼손 및 할석 방지",
+      "감리단 및 발주처 승인 전 임의 시공 절대 금지",
+    ],
+    qualityInspection: [
+      "세대당 계약전력 및 피더(Feeder) 용량 적정성",
+      "변압기 뱅크 구성(TR1 일반, TR2 동력, TR3 비상) 적정성",
+      "특기시방서와 설계도면 간 자재 스펙(KS 인증) 일치성",
+    ],
+    defectPrevention: ["설계 초기 불일치 해결로 골조 타설 후 재시공 및 전선 굵기 부족에 따른 전압강하 하자 원천 차단"],
+    detailSpecs: [
+      {
+        category: "설계 검토",
+        parameter: "전압강하 허용기준",
+        standardValue: "저압배선 3~5% 이내 (간선+분기)",
+        kecOrStandard: "KEC 232.3.9",
+        notes: "인입점~최원단 부하 기준",
+      },
+      {
+        category: "용량 산정",
+        parameter: "세대별 표준 부하",
+        standardValue: "전용면적 84㎡ 기준 7.0kW 이상",
+        kecOrStandard: "주택건설기준 등에 관한 규정",
+        notes: "인덕션/시스템에어컨 부하 가산",
+      },
+    ],
+    fieldPhotos: [
+      {
+        id: "p-001-1",
+        title: "수변전 단선결선도 및 부하계산서 기술검토",
+        caption: "특고압 특성 및 수용률, 비상발전기 용량 계산서 감리원 정밀 대조",
+        tag: "도면검토",
+        url: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=800&q=80",
+        inspectionPoint: "차단기 차단용량(KA) 및 변압기 2차 정격전류 확인",
+      },
+    ],
+    schematic: {
+      title: "수전용량 산정 및 설계도서 승인 프로세스",
+      type: "INSTALLATION_FLOW",
+      description: "도면검토 -> RFI 질의 -> 부하용량 확정 -> 감리단 승인 흐름도",
+      keyDimensions: [
+        { label: "RFI 처리기간", value: "접수 후 7일 이내" },
+        { label: "설계변경 승인", value: "착공 전 완료" },
+      ],
+      elements: [
+        { name: "도면/내역 대조", spec: "CAD / BIM", desc: "물량 및 규격 검증" },
+        { name: "부하용량 검증", spec: "KEC 230", desc: "수용률 50~60% 적용" },
+        { name: "Shop Drawing 승인", spec: "감리단 승인", desc: "착공 기본도서 확정" },
+      ],
+    },
+    updatedAt: "2026-08-22",
+  },
+  {
+    id: "METH-002",
+    wbsCode: "002",
+    phase: ConstructionPhase.PHASE_01_PREPARATION,
+    title: "타 공종(건축·기계·소방·토목) 간섭 구간 사전 협의 및 Shop Drawing 검토",
+    category: "착공 준비",
+    summary:
+      "건축 골조 철근 배근, 기계설비 닥트 및 배관, 소방 스프링클러 배관, 토목 우·오수관로와의 3차원 공간 간섭을 검토하여 전기 배관/트레이/피트의 시공상세도(Shop Drawing)를 확정하는 공정.",
+    steps: [
+      {
+        stepNumber: 1,
+        name: "3D BIM 및 복합단면도 중첩 검토",
+        description: "지하주차장, 기계실, EPS 피트 등 주요 설비 밀집 구역의 층고 및 배관 레벨을 중첩 검토.",
+        caution: "기계 덕트 하부로 트레이 관통 시 헤드룸(최저 유효높이 2.3m) 미확보 방지.",
+      },
+      {
+        stepNumber: 2,
+        name: "슬리브 관통 위치 및 보강근 사전 확정",
+        description: "지하 옹벽 및 주요 보(Beam)를 관통하는 강관 슬리브 위치를 건축 구조기술사와 사전 협의.",
+        caution: "구조체 단면 결손 방지를 위해 보 중앙 1/3 지점 준수 및 개구부 주위 대각 보강근 배근.",
+      },
+      {
+        stepNumber: 3,
+        name: "전기 Shop Drawing 작성 및 승인 접수",
+        description: "트레이 행거 위치, 매입박스 치수, 슬래브 배관 루트가 표기된 시공상세도면을 작성하여 감리단 승인 득함.",
+        caution: "타 공종 책임자 상호 서명 날인된 간섭검토 확인서 첨부.",
+      },
+    ],
+    materials: ["Shop Drawing 도면", "BIM 모델 데이터", "구조계산서"],
+    tools: ["Navisworks / Revit BIM", "레이저 레벨기", "CAD 소프트웨어"],
+    kecStandards: "KCS 31 60 05 전기설비공사 일반사항, 건축물의 구조기준 등에 관한 규칙",
+    safetyPoints: [
+      "슬리브 매설 위치 불일치로 인한 사후 코어링(Core Drilling) 작업 시 주철근 절단 위험 원천 방지",
+      "헤드룸 미확보 구간 작업 시 충돌 및 전도 방지",
+    ],
+    qualityInspection: [
+      "지하주차장 유효통과높이(2.3m 이상, 택배차량 진입구간 2.7m 이상) 트레이 레벨 확보",
+      "보 관통 슬리브 간 최소 이격거리(슬리브 직경의 3배 이상)",
+      "우수·오수관로 하부 교차 시 이격거리(300mm 이상)",
+    ],
+    defectPrevention: ["배관 겹침에 의한 슬래브 균열 방지 및 천장 덕트와 트레이 간섭에 따른 유지보수 불가 하자 예방"],
+    detailSpecs: [
+      {
+        category: "이격거리",
+        parameter: "타 설비 배관과 이격",
+        standardValue: "가스관 150mm 이상, 증기/온수관 150mm 이상",
+        kecOrStandard: "KEC 232.3",
+        notes: "보온재 외면 기준",
+      },
+    ],
+    fieldPhotos: [
+      {
+        id: "p-002-1",
+        title: "복합설비 시공상세도(Shop Drawing) 간섭 회의",
+        caption: "기계설비 덕트 및 소방배관과 전기 트레이 레벨 조율",
+        tag: "Shop도면",
+        url: "https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?auto=format&fit=crop&w=800&q=80",
+        inspectionPoint: "천장 마감선 및 트레이 지지행거 설치 공간 확인",
+      },
+    ],
+    updatedAt: "2026-08-22",
+  },
+  {
+    id: "METH-003",
+    wbsCode: "003",
+    phase: ConstructionPhase.PHASE_01_PREPARATION,
+    title: "한전 임시 수전 신청 및 임시 계량기 수급",
+    category: "가설 공사",
+    summary:
+      "공사 현장 운영에 필요한 임시동력(타워크레인, 호이스트, 현장사무실 등) 공급을 위해 한국전력공사에 가설전기 수전을 신청하고 계량기 취부 및 인입을 완료하는 행정/시공 공정.",
+    steps: [
+      {
+        stepNumber: 1,
+        name: "임시전력 수용 신청서 작성 및 제출",
+        description: "전기도급계약서, 건축허가서, 전기안전관리자 선임계를 첨부하여 한전 관할 지사에 임시수전 신청서 접수.",
+        caution: "신청 용량에 따른 한전 불입금 및 가설 보증보험증권 납부 기한 준수.",
+      },
+      {
+        stepNumber: 2,
+        name: "한전 설계 승인 및 공급방식 협의",
+        description: "가공 인입선로 루트, 전주 위치, 완철 취부 및 COS(Cut Out Switch) 인하선 연결점 협의.",
+        caution: "차량 및 대형 중장비 이동 동선과 가공선로 이격거리 확보.",
+      },
+      {
+        stepNumber: 3,
+        name: "임시 계량기함 취부 및 봉인 검사",
+        description: "방우형 가설 계량기함을 지정 전주에 취부하고 한전 담당자 입회 하에 타임스위치/계량기 봉인 완료.",
+        caution: "계량기 1차/2차 접촉 단자 조임 토크 확인.",
+      },
+    ],
+    materials: ["임시계량기함", "가공 인입선", "COS 및 퓨즈 링크", "접지동봉"],
+    tools: ["절연저항계(500V)", "검전기", "토크렌치", "활선작업용 절연장갑"],
+    kecStandards: "한전 기본공급약관 제72조(임시전력), KEC 140 접지시스템",
+    safetyPoints: [
+      "인입선 가선 작업 시 한전 전주 특고압(22.9kV) 접근금지 이격거리 2.0m 이상 유지",
+      "임시 계량기함 외함 접지저항 100Ω 이하 시공",
+    ],
+    qualityInspection: [
+      "임시 계량기 정격전류 및 CT 배율 확인",
+      "방우형 외함 IP54 이상 등급 확보",
+      "한전 봉인 씰 파손 유무 점검",
+    ],
+    defectPrevention: ["계량기 1차측 느슨한 결선으로 인한 열화 소손 및 불합리한 피크전력 초과에 따른 과징금 방지"],
+    updatedAt: "2026-08-22",
+  },
+  {
+    id: "METH-004",
+    wbsCode: "004",
+    phase: ConstructionPhase.PHASE_01_PREPARATION,
+    title: "현장 가설 패드 변압기 안착 및 단독 1종 접지봉 매설",
+    category: "가설 공사",
+    summary:
+      "고압/특고압 가설수전 시 현장 메인 가설 패드변압기(Pad TR)를 콘크리트 패드 위에 안착하고 규정 접지극을 시공하여 안전한 가설전원 공급 환경을 구축하는 시공.",
+    steps: [
+      {
+        stepNumber: 1,
+        name: "콘크리트 가설 기초 패드 시공",
+        description: "지반 다짐 후 두께 200mm 이상 무근 콘크리트 패드를 타설하고 앵커 볼트 매립.",
+        caution: "침수 위험이 없는 배수가 양호한 고지대 선정.",
+      },
+      {
+        stepNumber: 2,
+        name: "패드 변압기 양중 및 앵커 고정",
+        description: "크레인을 사용하여 변압기 수평을 맞추어 패드에 안착하고 볼트 체결.",
+        caution: "인양 로프 각도 60도 이상 유지 및 흔들림 방지 가이드 로프 운용.",
+      },
+      {
+        stepNumber: 3,
+        name: "접지극(접지봉) 매설 및 외함 본딩",
+        description: "동피복 강봉(14mm×1000mm)을 직렬 타설 매설하고 변압기 외함 및 중성점에 접지선 연결.",
+        caution: "접지저항 측정 후 기준치 충족 여부 확인(공통접지 연계 시 연동).",
+      },
+    ],
+    materials: ["가설 변압기(몰드/유입)", "동피복 접지봉", "접지선(GV 35sq 이상)", "콘크리트 패드"],
+    tools: ["크레인(양중기)", "접지저항계", "토크렌치", "수평기"],
+    kecStandards: "KEC 140 접지시스템, KEC 320 특고압 전기설비",
+    safetyPoints: [
+      "특고압 가설 변압기 주위 위험 표지판 및 출입통제 펜스 설치",
+      "변압기 외함 접지선 접촉 불량 시 감전사고 발생 가능성 원천 차단",
+    ],
+    qualityInspection: [
+      "변압기 오일레벨(유입식) 및 절연유 내압시험 성적서 확인",
+      "접지단자 볼트 체결 토크 35N·m 확인",
+      "기초 패드 수평도 오차 3mm 이내",
+    ],
+    defectPrevention: ["침수로 인한 변압기 침하 및 단락사고 방지용 배수로 확보"],
+    updatedAt: "2026-08-22",
+  },
+  {
+    id: "METH-005",
+    wbsCode: "005",
+    phase: ConstructionPhase.PHASE_01_PREPARATION,
+    title: "현장 메인 가설 배전반 거치 및 위험 방지 안전 울타리 설치",
+    category: "가설 공사",
+    summary:
+      "가설 변압기 2차측 메인 가설 배전반을 거치하고 주 차단기(MCCB/ELB) 결선 및 법정 높이(1.8m 이상)의 안전 울타리와 잠금장치를 설치하는 공정.",
+    steps: [
+      {
+        stepNumber: 1,
+        name: "메인 가설 배전반 지주 기초 설치",
+        description: "H빔 또는 단관파이프를 지반에 1.0m 이상 견고하게 항타 고정하여 배전반 지지틀 제작.",
+        caution: "태풍 및 돌풍에 전도되지 않도록 브레이싱 보강.",
+      },
+      {
+        stepNumber: 2,
+        name: "배전반 취부 및 주회로 결선",
+        description: "방우형 메인 배전반을 거치하고 3상4선식 케이블을 압착단자로 토크 체결.",
+        caution: "상별 식별색상(갈/흑/회/청) 준수 및 단자 보호커버 취부.",
+      },
+      {
+        stepNumber: 3,
+        name: "안전 방호 울타리 및 경고 표지 설치",
+        description: "배전반 주위 사방 1.5m 이격하여 메쉬 펜스(높이 1.8m) 설치, 시건장치 및 특고압/고압 위험표지판 부착.",
+        caution: "전기안전관리자 외 출입금지 팻말 및 소화기(ABC 분말 3.3kg 2기) 비치.",
+      },
+    ],
+    materials: ["가설 배전반(SUS/스틸 방우형)", "안전 메쉬 펜스", "위험경고판", "소화기"],
+    tools: ["전동 임팩드라이버", "압착기(유압식)", "절연저항계"],
+    kecStandards: "산업안전보건기준에 관한 규칙 제301조~제337조, KEC 232 배선설비",
+    safetyPoints: [
+      "울타리 도어 상시 잠금 및 열쇠 관리대장 작성",
+      "가설 배전반 외함 독립 접지선 연접",
+    ],
+    qualityInspection: [
+      "메인 MCCB 용량 및 분기 ELB 차단용량(kA) 적정성",
+      "배전반 내부 부스바 절연수축튜브 피복 상태",
+      "울타리 흔들림 및 지지력 검사",
+    ],
+    defectPrevention: ["우천 시 빗물 유입으로 인한 메인 차단기 트립 및 공사 중단 방지(차양막 설치)"],
+    updatedAt: "2026-08-22",
+  },
+  {
+    id: "METH-006",
+    wbsCode: "006",
+    phase: ConstructionPhase.PHASE_01_PREPARATION,
+    title: "대형 양중 장비(타워크레인/호이스트) 전용 동력 간선 가설",
+    category: "가설 공사",
+    summary:
+      "타워크레인(Tower Crane), 공사용 호이스트(건설용 리프트) 등 대형 고출력 양중장비의 정격 기동전류를 감당하는 전용 내화/난연 간선 케이블 포설 및 전용 차단반 구축.",
+    steps: [
+      {
+        stepNumber: 1,
+        name: "장비 기동용량 및 전압강하 계산",
+        description: "타워크레인(권상모터 등 대용량) 기동전류(정격의 5~7배)에 따른 전압강하(2% 이하)를 만족하는 케이블 굵기 산출(예: TFR-CV 150~240sq).",
+        caution: "기동 시 순간 전압강하로 인한 인접 기기 오동작 방지.",
+      },
+      {
+        stepNumber: 2,
+        name: "전용 간선 포설 및 보호관 가설",
+        description: "메인 가설반에서 타워크레인 기초부까지 지중 매설(깊이 0.6m 이상 ELP관) 또는 가공 트레이로 전용선로 포설.",
+        caution: "장비 이동 통로 횡단 시 차량 하중에 견디는 강관 슬리브 및 보호철판 덮개 시공.",
+      },
+      {
+        stepNumber: 3,
+        name: "장비 하부 전용 분전반 설치 및 접지 연결",
+        description: "전용 누전차단기(ELB 고감도/시연형)를 내장한 제어반을 설치하고 장비 마스트와 등전위 접지 본딩 체결.",
+        caution: "타워크레인 기초 앵커와 독립 접지극 연결(접지저항 10Ω 이하).",
+      },
+    ],
+    materials: ["전력케이블(TFR-CV 3C/4C)", "ELP 주름관", "타워크레인 전용 분전반", "접지 클램프"],
+    tools: ["케이블 윈치", "절연저항계(1000V)", "유압 압착기"],
+    kecStandards: "KEC 232 케이블공사, 산업안전보건기준에 관한 규칙 제142조(타워크레인)",
+    safetyPoints: [
+      "타워크레인 상승(클라이밍) 시 이동식 케이블 드럼 장력 관리 및 전선 꼬임 손상 방지",
+      "낙뢰 대비 피뢰 인하도선과 타워크레인 마스트 본딩 체결",
+    ],
+    qualityInspection: [
+      "절연저항 측정값(100MΩ 이상 확인)",
+      "단자대 체결 볼트 스프링 와셔 삽입 및 풀림 방지 너트",
+      "케이블 굴곡반경(외경의 8배 이상) 준수",
+    ],
+    defectPrevention: ["케이블 외피 긁힘 손상에 의한 누전 트립 및 크레인 작동 정지 사고 사전 차단"],
+    updatedAt: "2026-08-22",
+  },
+  {
+    id: "METH-007",
+    wbsCode: "007",
+    phase: ConstructionPhase.PHASE_01_PREPARATION,
+    title: "층별 이동식 가설 분전반(ELB 내장) 분기 배치 및 접지선 연접",
+    category: "가설 공사",
+    summary:
+      "구조체 층별 작업자들의 전동공구, 용접기, 조명 사용을 위한 이동식 방우형 가설분전반(감도 30mA 누전차단기 내장)을 배치하고 전 층 접지 간선을 수직 연접하는 공정.",
+    steps: [
+      {
+        stepNumber: 1,
+        name: "수직 간선(Riser) 케이블 포설",
+        description: "EPS 피트 또는 계단실을 통해 층별 가설 메인 간선(VCTF/CV 케이블)을 수직 포설하고 층별 브래킷 지지.",
+        caution: "수직 하중 지지를 위해 3m 간격으로 전용 클리트 또는 로프 결속.",
+      },
+      {
+        stepNumber: 2,
+        name: "층별 이동식 분전반 거치 및 분기 결선",
+        description: "각 층 코어 부근 통로에 방우형 가설 분전반을 바닥에서 300mm 이상 띄워 거치.",
+        caution: "모든 분기 회로에 인체감전보호용 누전차단기(30mA, 0.03초) 필수 장착.",
+      },
+      {
+        stepNumber: 3,
+        name: "보호접지선(PE) 전 층 연접 및 테스트",
+        description: "녹/황색 접지선(GV 16sq 이상)을 전 분전반 외함 접지단자에 직렬 연접하고 누전 테스트 버튼 전수 작동 시험.",
+        caution: "접지 연속성 루프 저항 1.0Ω 이하 유지.",
+      },
+    ],
+    materials: ["이동식 가설분전함(IP55)", "누전차단기(ELB 2P 30AF/20A)", "방우 콘센트", "접지선(GV)"],
+    tools: ["누전차단기 테스터기", "검전기", "멀티미터"],
+    kecStandards: "산업안전보건기준에 관한 규칙 제329조(누전차단기), KEC 140 접지시스템",
+    safetyPoints: [
+      "현장 내 문어발식 멀티탭 무단 사용 엄격 금지",
+      "분전반 전면 0.8m 이내 자재 적치 금지 공간 확보",
+    ],
+    qualityInspection: [
+      "누전차단기 테스트 버튼 작동 즉시 트립 여부",
+      "외함 접지단자 볼트 체결 상태",
+      "분전반 내 결로 및 빗물 유입 방지 실링",
+    ],
+    defectPrevention: ["물청소 및 콘크리트 타설 시 수분 유입으로 인한 단락 방지(전원선 하부 인입 시공)"],
+    updatedAt: "2026-08-22",
+  },
+  {
+    id: "METH-008",
+    wbsCode: "008",
+    phase: ConstructionPhase.PHASE_01_PREPARATION,
+    title: "계단실·복도·지하 암전구간 가설 작업등 및 비상 유도등 가설",
+    category: "가설 공사",
+    summary:
+      "근로자의 안전한 이동 및 작업 시야 확보를 위해 계단실, 공용복도, 지하주차장 암전구역에 안전전압(또는 방수형 LED 스트링라이트) 조명 및 비상 유도등을 설치하는 공정.",
+    steps: [
+      {
+        stepNumber: 1,
+        name: "조명 배치 계획 및 조도 기준 수립",
+        description: "주통로 30 Lux 이상, 작업구역 150 Lux 이상 확보를 위한 조명 간격(3~5m) 설정.",
+        caution: "눈부심 방지 및 충돌 파손 방지를 위해 천장고 2.2m 이상 높이에 설치.",
+      },
+      {
+        stepNumber: 2,
+        name: "방수형 LED 스트링라이트 및 보호망 조명 설치",
+        description: "IP65 방수 일체형 LED 등기구 또는 철재 보호망이 부착된 가설 조명을 메신저 와이어에 현수 지지.",
+        caution: "전선 처짐 방지를 위해 2m마다 인슐레이션 케이블타이 결속.",
+      },
+      {
+        stepNumber: 3,
+        name: "정전 대비 축전지 내장형 비상조명등 취부",
+        description: "계단실 굴곡부 및 주 출입구에 정전 시 60분 이상 점등되는 비상조명등 설치.",
+        caution: "월 1회 방전 테스트 및 배터리 충전상태 점검.",
+      },
+    ],
+    materials: ["LED 스트링 작업등(IP65)", "철재 보호망 조명", "비상조명등(배터리 내장형)", "메신저 와이어"],
+    tools: ["조도계", "사다리/비계", "케이블 텐셔너"],
+    kecStandards: "산업안전보건기준에 관한 규칙 제8조(조도), KCS 31 60 10",
+    safetyPoints: [
+      "지하 암전구간 단독 작업 절대 금지(2인 1조 작업)",
+      "전구 파손 시 유리 비산 방지용 PC(폴리카보네이트) 커버 등기구 사용",
+    ],
+    qualityInspection: [
+      "통로 바닥면 조도 측정(30 Lux 이상 유지)",
+      "전선 피복 찍힘 및 누전 여부",
+      "비상조명등 축전지 예비전원 정상 절체 여부",
+    ],
+    defectPrevention: ["전선 노출 가설 시 작업자 발걸림 및 손수레 충돌에 의한 단선/합선 방지"],
+    updatedAt: "2026-08-22",
+  },
+];

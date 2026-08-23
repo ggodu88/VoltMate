@@ -1,0 +1,327 @@
+import { ConstructionMethod, ConstructionPhase } from "../../types";
+
+export const PHASE_02_METHODS: ConstructionMethod[] = [
+  {
+    id: "METH-009",
+    wbsCode: "009",
+    phase: ConstructionPhase.PHASE_02_GROUNDING,
+    title: "기초 터파기 바닥 레벨 확인 및 나동선(HDCC) 격자망(Mesh) 포설",
+    category: "기초 접지",
+    summary:
+      "건축물 기초 매트(Mat) 하부 버림 콘크리트 타설 전 원지반 바닥에 규정 규격의 나동연선(HDCC 95~150sq)을 가로·세로 격자망(Mesh, 통상 5m~10m 간격)으로 포설하여 대지 전위경도를 평탄화하는 기초 통합접지 공정.",
+    steps: [
+      {
+        stepNumber: 1,
+        name: "터파기 바닥 레벨 및 먹매김 검측",
+        description: "토목 굴착 바닥면의 지하수위 및 암반 여부를 확인하고 도면에 명시된 접지 그리드(Grid) 위치를 래커/먹줄로 마킹.",
+        caution: "동결심도(GL -0.75m 이상) 이하 깊이에 매설되도록 굴착 깊이 재확인.",
+      },
+      {
+        stepNumber: 2,
+        name: "나동연선(HDCC) 언와인딩 및 격자 포설",
+        description: "드럼 잭을 사용하여 나동선(HDCC 95sq 또는 120sq)을 꼬임 없이 직선으로 펼쳐 격자형 망(Mesh) 형태로 배치.",
+        caution: "도체 표면의 기름때나 흙먼지 유입 방지 및 꺾임(Kink) 발생 금지.",
+      },
+      {
+        stepNumber: 3,
+        name: "격자 교차점 임시고정 및 앵커 핀 고정",
+        description: "콘크리트 타설 시 도체가 밀리지 않도록 전용 고정 핀(U자 앵커)을 바닥에 2~3m 간격으로 박아 고정.",
+        caution: "버림 콘크리트 타설 장비 이동 시 나동선 절단 및 변형 방지.",
+      },
+    ],
+    materials: ["경동연선(HDCC 95sq/120sq/150sq)", "U자 고정 핀", "마킹 래커"],
+    tools: ["케이블 드럼 잭", "와이어 커터", "레이저 거리측정기"],
+    kecStandards: "KEC 140 접지시스템 (142 기초접지극), KS C IEC 62305",
+    safetyPoints: [
+      "굴착 사면 붕괴 위험 감시원 배치 및 안전모 착용",
+      "중장비(포크레인/덤프트럭) 회전 반경 내 접근 통제",
+    ],
+    qualityInspection: [
+      "격자망 간격(설계도면 5m×5m 또는 10m×10m) 일치성",
+      "나동선 규격(공칭단면적 95sq 이상) 버니어캘리퍼스 측정",
+      "매설 깊이(동결심도 0.75m 이상) 만족 여부",
+    ],
+    defectPrevention: ["도체 느슨함으로 인한 타설 중 뭉침 현상 방지(팽팽하게 텐션 유지 고정)"],
+    detailSpecs: [
+      {
+        category: "접지도체",
+        parameter: "구리 연선(HDCC) 최소 단면적",
+        standardValue: "50㎟ 이상 (현장 표준 95~120㎟)",
+        kecOrStandard: "KEC 표 142.1-1",
+        notes: "부식 및 기계적 손상 방지",
+      },
+      {
+        category: "매설 깊이",
+        parameter: "기초 외곽 매설 깊이",
+        standardValue: "지표면 하 0.75m 이상 (동결선 이하)",
+        kecOrStandard: "KEC 142.2",
+        notes: "암반 구간은 접지저감제 병행",
+      },
+    ],
+    updatedAt: "2026-08-22",
+  },
+  {
+    id: "METH-010",
+    wbsCode: "010",
+    phase: ConstructionPhase.PHASE_02_GROUNDING,
+    title: "메쉬 접지 교차점 전용 몰드 장착 및 화약 발열용접(Cadwelding) 시공",
+    category: "기초 접지",
+    summary:
+      "메쉬 접지 나동선의 십자(X) 및 삼거리(T) 교차 접속 부위를 산화동과 알루미늄 분말 화약을 점화하여 1,083℃ 이상의 순수 구리 용융 상태로 완벽한 분자적 일체화를 구현하는 발열용접(Exothermic Welding) 공정.",
+    steps: [
+      {
+        stepNumber: 1,
+        name: "접속 도체 표면 연마 및 건조",
+        description: "와이어 브러시 및 가스 토치로 나동선 접속 부위의 수분, 유분, 산화피막을 완전 제거.",
+        caution: "수분이 남아있을 경우 용접 시 수증기 폭발로 용융물이 비산하므로 100℃ 이상 예열 건조 필수.",
+      },
+      {
+        stepNumber: 2,
+        name: "흑연 몰드(Graphite Mold) 장착 및 클램핑",
+        description: "도체 규격에 맞는 카본 몰드 내부에 도체를 삽입하고 전용 핸들 클램프로 기밀 밀착.",
+        caution: "몰드 틈새가 벌어질 경우 실링 컴파운드(Duct Seal)로 틈새 밀봉.",
+      },
+      {
+        stepNumber: 3,
+        name: "스틸 디스크 삽입 및 용접 화약 장전",
+        description: "몰드 바닥에 스틸 디스크를 놓고 용접 분말 화약(Weld Metal) 투입 후 상부에 점화약 살포.",
+        caution: "화약 캔 용량 번호(예: #115, #150 등 규격별) 일치 여부 확인.",
+      },
+      {
+        stepNumber: 4,
+        name: "점화건 발화 및 냉각",
+        description: "스파크 점화건(Flint Gun)으로 점화약을 발화시켜 반응을 유도하고 15초간 냉각 후 몰드 탈착.",
+        caution: "작업자는 방열장갑, 안면보호구 착용 및 점화 시 1.5m 이상 후방 대기.",
+      },
+    ],
+    materials: ["발열용접 화약(Weld Metal)", "흑연 몰드(X/T/직렬형)", "스틸 디스크", "점화약"],
+    tools: ["몰드 핸들 클램프", "스파크 점화건", "토치 램프", "카본 청소용 스크래퍼"],
+    kecStandards: "IEEE 837 규격 충족, KEC 140 접지시스템",
+    safetyPoints: [
+      "화약 취급 시 화기 엄금 및 전용 보관함 시건 관리",
+      "용접 반응 시 2,000℃ 고온 발생으로 절대 맨손 접촉 금지",
+    ],
+    qualityInspection: [
+      "용접 접속부 용융 구리 충진율(기포나 공극 없이 100% 융착)",
+      "인장 강도 시험(해머 타격 시 도체 탈락 없음 확인)",
+      "흑연 몰드 마모 상태(50회 사용 후 교체)",
+    ],
+    defectPrevention: ["수분 미제거로 인한 블로우홀(Blow-hole) 및 용접 불량에 따른 접지저항 상승 예방"],
+    updatedAt: "2026-08-22",
+  },
+  {
+    id: "METH-011",
+    wbsCode: "011",
+    phase: ConstructionPhase.PHASE_02_GROUNDING,
+    title: "발열용접 접속 부위 슬래그 제거, 방식 테이핑 및 부식 방지 컴파운드 도포",
+    category: "기초 접지",
+    summary:
+      "발열용접 완료 후 표면에 형성된 불순물 슬래그(Slag)를 브러시로 제거하고 지하 토양 매설 시 전식 및 화학적 부식을 방지하기 위해 방식 테이프와 방청 컴파운드를 다중 도포하는 마감 공정.",
+    steps: [
+      {
+        stepNumber: 1,
+        name: "표면 슬래그 및 그을음 브러싱 제거",
+        description: "와이어 브러시 및 스크래퍼를 사용하여 용접부 표면의 탄화물과 슬래그를 금속 광택이 날 때까지 청소.",
+        caution: "이물질이 잔류할 경우 방식제 접착력 저하 발생.",
+      },
+      {
+        stepNumber: 2,
+        name: "부식 방지 방청 컴파운드 1차 도포",
+        description: "전식 방지용 고점도 석유계/수지계 방청 페이스트를 접속부 사방에 균일하게 도포.",
+        caution: "도체와 용접부 전체가 빈틈없이 피복되도록 붓으로 도포.",
+      },
+      {
+        stepNumber: 3,
+        name: "페트로라툼 방식 테이프 1/2 중첩 권선",
+        description: "방식 테이프(Petrolatum Tape)를 접속부 양단 100mm 이상 여유를 두고 50% 겹침으로 2회 이상 밀착 감기.",
+        caution: "테이프 사이에 공기 방울이 생기지 않도록 손으로 압착 밀착.",
+      },
+    ],
+    materials: ["페트로라툼 방식 테이프", "부식방지 방청 컴파운드", "보호용 PVC 점착테이프"],
+    tools: ["와이어 브러시", "스크래퍼", "붓/주걱"],
+    kecStandards: "KCS 31 60 10 접지설비공사, KS M 2240",
+    safetyPoints: [
+      "방식제 도포 시 유기용제 흡입 방지용 방진/방독 마스크 착용",
+      "표면 날카로운 슬래그 파편에 의한 손 베임 방지 보호장갑 착용",
+    ],
+    qualityInspection: [
+      "방식 테이프 중첩 폭(1/2 겹침) 및 들뜸 유무",
+      "도체 접속점 전후 100mm 이상 피복 연장 여부",
+      "외피 PVC 보호 테이프 마감 견고성",
+    ],
+    defectPrevention: ["콘크리트 알칼리 성분 및 토양 수분에 의한 접지 접속점 갈바닉 부식 단선 방지"],
+    updatedAt: "2026-08-22",
+  },
+  {
+    id: "METH-012",
+    wbsCode: "012",
+    phase: ConstructionPhase.PHASE_02_GROUNDING,
+    title: "기초 바닥 4전극법 대지저항률 측정 및 1차 메쉬 접지저항 시험",
+    category: "접지 시험",
+    summary:
+      "Wenner 4전극법(4-Point Method)을 적용하여 기초 지반의 심도별 대지저항률(Ω·m)을 측정하고, 포설 완료된 메쉬 접지극의 1차 접지저항값을 전위강하법(Fall-of-Potential)으로 시험·기록하는 공정.",
+    steps: [
+      {
+        stepNumber: 1,
+        name: "Wenner 4전극법 대지저항률 측정",
+        description: "동일 직선상에 보조 접지봉 4개를 등간격(a = 1m, 2m, 4m, 8m, 16m)으로 매설하고 대지저항률 측정.",
+        caution: "지중 매설 배관이나 금속 구조물과 평행하지 않도록 직교 방향으로 전극 배치.",
+      },
+      {
+        stepNumber: 2,
+        name: "전위강하법 1차 메쉬 접지저항 측정",
+        description: "전류보조극(C)을 50m~100m, 전압보조극(P)을 61.8% 지점에 배치하여 1차 메쉬 합성접지저항 측정.",
+        caution: "측정 오차(5% 이내) 확인을 위해 P 전극을 전후 10% 이동하며 측정 곡선 확인.",
+      },
+      {
+        stepNumber: 3,
+        name: "측정값 분석 및 감리단 시험성적서 제출",
+        description: "측정된 대지저항률과 접지저항값을 공학적 계산서와 비교하여 목표 저항값(통상 10Ω 또는 5Ω 이하) 달성 여부 판정.",
+        caution: "기준치 미달 시 보조 접지봉 추가 항타 또는 접지저감재 타설 계획 수립.",
+      },
+    ],
+    materials: ["접지시험 성적서 서식", "보조 접지 전극봉", "테스트 리드선(100m 릴)"],
+    tools: ["정밀 대지저항률/접지저항측정기(Chauvin Arnoux / Megger)", "줄자(100m)"],
+    kecStandards: "KEC 140 접지시스템, IEEE Std 81 접지측정 가이드라인",
+    safetyPoints: [
+      "측정 리드선 포설 시 현장 덤프트럭 및 중장비 단선 방지 가이드 운용",
+      "낙뢰 발생 징후 시 접지 측정 작업 즉시 중단",
+    ],
+    qualityInspection: [
+      "4전극 전극 간격(a) 및 측정 심도별 데이터 일치성",
+      "전위강하 곡선 수평 플랫 구간(Flat Zone) 형성 확인",
+      "감리원 입회 서명 날인 및 온·습도 기상조건 기록",
+    ],
+    defectPrevention: ["접지저항 불량으로 인한 변전실 수전 거부 및 서지 보호 실패를 초기 단계에서 예방"],
+    updatedAt: "2026-08-22",
+  },
+  {
+    id: "METH-013",
+    wbsCode: "013",
+    phase: ConstructionPhase.PHASE_02_GROUNDING,
+    title: "매설 접지극과 기초 기둥 주철근 간 등전위 본딩(Bonding) 클램프 체결",
+    category: "기초 접지",
+    summary:
+      "메쉬 접지극에서 인출된 나동선을 건축물 기초 매트 및 주요 내력 기둥의 주철근(Rebar)에 전용 인증 C형/U형 본딩 클램프로 구조체 접지(Ufer Ground) 연계 체결하는 공정.",
+    steps: [
+      {
+        stepNumber: 1,
+        name: "기둥 주철근 및 접지 인출선 표면 정리",
+        description: "등전위 본딩 대상 기둥 주철근(HD25 이상) 표면의 녹, 시멘트 분진을 그라인더/와이어 브러시로 연마하여 순수 금속면 노출.",
+        caution: "철근 단면 결손이 발생하지 않도록 표면 산화막만 가볍게 연마.",
+      },
+      {
+        stepNumber: 2,
+        name: "전용 인증 본딩 클램프(UL/KS) 장착",
+        description: "철근-구리 도체 이종 금속 간 전식 방지 플레이트가 포함된 전용 본딩 클램프를 철근과 나동선 사이에 장착.",
+        caution: "철근과 나동선 직결 용접은 철근 열변형(취성)을 유발하므로 클램프 체결 원칙 준수.",
+      },
+      {
+        stepNumber: 3,
+        name: "규정 토크 체결 및 도통 저항 측정",
+        description: "토크렌치를 사용하여 볼트를 규정 토크(40N·m)로 조이고 마이크로 옴메타로 접촉저항(0.05Ω 이하) 확인.",
+        caution: "체결 후 콘크리트 타설 충격에 풀리지 않도록 더블 너트 체결 및 토크씰 마킹.",
+      },
+    ],
+    materials: ["철근-동선 전용 본딩 클램프", "이종금속 전식방지 바이메탈 와셔", "토크 씰 마커"],
+    tools: ["토크렌치", "와이어 브러시", "접촉저항 측정기(Micro-Ohmmeter)"],
+    kecStandards: "KEC 142.3 구조체 접지극, KS C IEC 62305-3",
+    safetyPoints: [
+      "기초 철근 배근 틈새 보행 시 발빠짐 및 철근 찔림 방지 안전화 착용",
+      "철근 캡(안전 캡) 부착 구역에서 작업",
+    ],
+    qualityInspection: [
+      "기둥 본딩 개소수(도면 지정 위치 100% 시공)",
+      "클램프 볼트 체결 토크값 전수 확인",
+      "도통 시험 접촉저항 0.05Ω 이하 적합 여부",
+    ],
+    defectPrevention: ["등전위 미형성으로 인한 뇌서지 인입 시 층간 전위차 발생 및 전자통신기기 소손 방지"],
+    updatedAt: "2026-08-22",
+  },
+  {
+    id: "METH-014",
+    wbsCode: "014",
+    phase: ConstructionPhase.PHASE_02_GROUNDING,
+    title: "피뢰 인하도선 기초 연접용 테스트 박스(Test Box) 매설",
+    category: "피뢰 접지",
+    summary:
+      "옥탑 피뢰침에서 내려오는 인하도선(Down Conductor)과 기초 접지극을 연결하는 지점에 정기적인 접지저항 측정 및 분리 시험이 가능하도록 기초 옹벽 매입형 테스트 박스(Test Box)를 설치하는 공정.",
+    steps: [
+      {
+        stepNumber: 1,
+        name: "테스트 박스 매설 위치 및 높이 확정",
+        description: "건물 외벽 또는 지하 1층 기둥 지표면 상부(GL +300mm~500mm)에 테스트 박스 매설 위치 먹매김.",
+        caution: "마감 후 점검이 용이하고 미관을 해치지 않는 점검 공간 확보.",
+      },
+      {
+        stepNumber: 2,
+        name: "스테인리스(SUS304) 테스트 박스 및 분리 단자대 고정",
+        description: "외함 옹벽 거푸집에 견고히 볼팅 고정하고 내부에 분리형 구리 단자 링크(Disconnecting Link) 취부.",
+        caution: "콘크리트 타설 시 모르타르 유입 방지를 위해 전면 커버 테이핑 밀봉.",
+      },
+      {
+        stepNumber: 3,
+        name: "상부 인하도선 및 하부 기초접지선 인입 결선",
+        description: "상부 피뢰 인하도선과 하부 기초 접지선(HDCC 70~95sq)을 단자대에 각각 압착 러그로 연결 후 분리 볼트 체결.",
+        caution: "추후 분리 측정을 위해 단자대 볼트에 고착 방지 구리스 도포.",
+      },
+    ],
+    materials: ["SUS304 피뢰 테스트 박스", "분리형 동 링크 단자대", "압착 터미널 러그", "방수 가스켓"],
+    tools: ["전동 임팩", "수평기", "토크렌치"],
+    kecStandards: "KS C IEC 62305-3 피뢰시스템 인하도선 시험 접속점",
+    safetyPoints: [
+      "매입 박스 고정 시 거푸집 철선 결속 철저(타설 압력에 의한 이탈 방지)",
+      "박스 모서리 날카로운 버(Burr) 제거",
+    ],
+    qualityInspection: [
+      "테스트 박스 수평·수직 레벨 및 마감면과의 일치성",
+      "분리 링크 볼트 체결 및 분리 용이성",
+      "접지도체 단말 러그 압착 상태 및 방청 처리",
+    ],
+    defectPrevention: ["외벽 누수로 인한 단자대 부식 방지(방수 패킹 및 결로 배수홀 확인)"],
+    updatedAt: "2026-08-22",
+  },
+  {
+    id: "METH-015",
+    wbsCode: "015",
+    phase: ConstructionPhase.PHASE_02_GROUNDING,
+    title: "전기실/통신실 주 접지단자함(MEB) 인출 배관 및 인출 도체 포설",
+    category: "주 접지단자",
+    summary:
+      "기초 매쉬 접지극에서 전기실 및 통신실의 주 접지단자함(MEB: Main Earthing Busbar)까지 비자성체 보호관(PVC/나선관)을 매설하고 대용량 주 접지도체(HDCC 150~240sq)를 인출하는 공정.",
+    steps: [
+      {
+        stepNumber: 1,
+        name: "MEB 인출 배관 루트 및 슬리브 매설",
+        description: "기초 바닥에서 전기실/통신실 MEB 설치 벽체까지 합성수지관(HI-PVC 54C 이상)을 최단 거리로 배관.",
+        caution: "도체 유도 리액턴스 증가를 방지하기 위해 강자성 금속관 사용 절대 금지(KEC 비자성체 관로 준수).",
+      },
+      {
+        stepNumber: 2,
+        name: "주 접지도체 인출 및 보호관 관통",
+        description: "기초 메쉬에서 분기된 주 접지도체(HDCC 150sq~240sq 2조 이상 다중화)를 배관 내부로 인출.",
+        caution: "배관 곡률반경 관경의 6배 이상 유지하여 전선 입선 시 손상 방지.",
+      },
+      {
+        stepNumber: 3,
+        name: "배관 단말 방수 실링 및 MEB 연계 여장 확보",
+        description: "전기실 바닥 인출구 단말을 덕트 실(Duct Seal) 및 우레탄 폼으로 방수 처리하고 단자함 연결용 여장(1.5m) 확보.",
+        caution: "콘크리트 타설 중 전선 손상 방지용 보호 캡 마감.",
+      },
+    ],
+    materials: ["주 접지도체(HDCC 150~240sq)", "HI-PVC 전선관(54C)", "덕트 씰(방수 컴파운드)", "식별 태그"],
+    tools: ["배관 벤더", "통선용 와이어", "케이블 풀러"],
+    kecStandards: "KEC 141 접지시스템의 구성, KEC 142.1 주 접지단자",
+    safetyPoints: [
+      "대용량 나동선 양중 시 중량물 취급 안전수칙 준수(2인 1조)",
+      "인출 배관 돌출부 안전 캡 씌우기(근로자 전도 찔림 방지)",
+    ],
+    qualityInspection: [
+      "인출 도체 굵기(설계도면 150sq 이상 확인)",
+      "비자성체(합성수지관) 관로 시공 여부(자석 테스트)",
+      "전기실/통신실 인출 위치 좌표 정확도",
+    ],
+    defectPrevention: ["강제 금속관 관통 시 와전류(Eddy Current) 발열에 의한 화재 및 임피던스 상승 하자 원천 차단"],
+    updatedAt: "2026-08-22",
+  },
+];
