@@ -37,44 +37,51 @@ async function generateContentWithFallback(
     temperature?: number;
   }
 ) {
-  // Try models in order: gemini-2.5-flash (fast, high capacity), gemini-3.7-flash, gemini-2.5-pro
-  const models = ["gemini-2.5-flash", "gemini-3.7-flash", "gemini-2.5-pro"];
+  // Use approved valid models: gemini-3.7-flash, gemini-3.1-flash-lite, gemini-3.1-pro-preview
+  const models = ["gemini-3.7-flash", "gemini-3.1-flash-lite", "gemini-3.1-pro-preview"];
   let lastError: any = null;
 
   for (const model of models) {
-    try {
-      const config: any = {
-        temperature: options.temperature ?? 0.2,
-      };
-      if (options.systemInstruction) {
-        config.systemInstruction = options.systemInstruction;
-      }
-      if (options.responseMimeType) {
-        config.responseMimeType = options.responseMimeType;
-      }
+    // Attempt up to 2 times per model if encountering temporary 503/429
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const config: any = {
+          temperature: options.temperature ?? 0.2,
+        };
+        if (options.systemInstruction) {
+          config.systemInstruction = options.systemInstruction;
+        }
+        if (options.responseMimeType) {
+          config.responseMimeType = options.responseMimeType;
+        }
 
-      const response = await ai.models.generateContent({
-        model,
-        contents: options.contents,
-        config,
-      });
+        const response = await ai.models.generateContent({
+          model,
+          contents: options.contents,
+          config,
+        });
 
-      if (response && response.text) {
-        return response;
-      }
-    } catch (err: any) {
-      console.warn(`Model ${model} failed with error:`, err?.message || err);
-      lastError = err;
-      // If error is 503 (high demand) or 429 (rate limit), continue to next model
-      const isRetryable =
-        err?.status === 503 ||
-        err?.code === 503 ||
-        err?.status === 429 ||
-        err?.code === 429 ||
-        (err?.message && (err.message.includes("503") || err.message.includes("demand") || err.message.includes("UNAVAILABLE")));
-      
-      if (!isRetryable && models.indexOf(model) === models.length - 1) {
-        throw err;
+        if (response && response.text) {
+          return response;
+        }
+      } catch (err: any) {
+        console.warn(`Model ${model} (attempt ${attempt + 1}) failed with error:`, err?.message || err);
+        lastError = err;
+
+        const isRetryable =
+          err?.status === 503 ||
+          err?.code === 503 ||
+          err?.status === 429 ||
+          err?.code === 429 ||
+          (err?.message && (err.message.includes("503") || err.message.includes("demand") || err.message.includes("UNAVAILABLE")));
+
+        if (isRetryable && attempt === 0) {
+          // Wait 600ms before retrying the same model once
+          await new Promise((resolve) => setTimeout(resolve, 600));
+          continue;
+        }
+        // If not retryable or second attempt failed, break to try the next model
+        break;
       }
     }
   }
